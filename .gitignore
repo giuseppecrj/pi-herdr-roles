@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+*.tgz
+.pi/
+.pi-lens-probe-home/
+.env
+.env.*
+!.env.example
