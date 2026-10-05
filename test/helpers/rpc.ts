@@ -198,10 +198,12 @@ export class IsolatedPi {
 }
 
 /** Optional real host package root for combined-host checks. */
-export function configuredHostRoot(): string | undefined {
-	const root = process.env.PI_HERDR_AGENTS_HOST;
+export function configuredHostRoot(
+	variable = "PI_HERDR_AGENTS_HOST",
+): string | undefined {
+	const root = process.env[variable];
 	if (!root) return undefined;
 	if (!existsSync(join(root, "package.json")))
-		throw new Error(`PI_HERDR_AGENTS_HOST has no package.json: ${root}`);
+		throw new Error(`${variable} has no package.json: ${root}`);
 	return resolve(root);
 }

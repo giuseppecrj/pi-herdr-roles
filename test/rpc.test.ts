@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { formatPlanPrompt, PLAN_SKILL_PATH } from "../extensions/index.ts";
@@ -149,75 +149,117 @@ describe("installed pack without pi-herdr-agents", () => {
 	});
 });
 
-const hostRoot = configuredHostRoot();
-const legacyHost =
-	hostRoot !== undefined &&
-	existsSync(join(hostRoot, "agents")) &&
-	readdirSync(join(hostRoot, "agents")).some((file) => file.endsWith(".md"));
+/** Role lines from subagents_list, e.g. "scout (package:pi-herdr-roles)". */
+function roleLines(listing: string): string[] {
+	return [...listing.matchAll(/^• (\S+ \([^)]+\))/gm)]
+		.map((match) => match[1])
+		.toSorted();
+}
 
-describe("installed pack with a real pi-herdr-agents host", {
+async function assertDeliversPlan(pi: IsolatedPi, command: string) {
+	assert.equal(
+		await deliveredPlanPrompt(pi, command),
+		formatPlanPrompt(
+			PLAN_SKILL_PATH,
+			readFileSync(PLAN_SKILL_PATH, "utf8"),
+			"build x",
+		),
+	);
+}
+
+const hostRoot = configuredHostRoot();
+const legacyHostRoot = configuredHostRoot("PI_HERDR_AGENTS_LEGACY_HOST");
+
+// Role-free expectations always apply to PI_HERDR_AGENTS_HOST; a legacy host
+// must fail here rather than loosen them. Legacy characterization is opt-in below.
+describe("installed pack with a real role-free pi-herdr-agents host", {
 	skip:
 		hostRoot === undefined &&
 		"set PI_HERDR_AGENTS_HOST=<host package root> to run combined-host checks",
 }, () => {
-	it(
-		legacyHost
-			? "legacy bundled host: host rejects pack roles with its own collision diagnostics"
-			: "role-free host: lists the six roles with package provenance and no collisions",
-		async () => {
-			const pi = new IsolatedPi({ packages: [PACK_ROOT, hostRoot ?? ""] });
-			try {
-				const listing = await listedRoles(pi);
-				const listed = await commands(pi);
-				if (legacyHost) {
-					for (const role of ROLES)
-						assert.ok(
-							listing.includes(
-								`Role pack cannot replace bundled role "${role}"`,
-							),
-							`missing host-owned collision diagnostic for ${role}`,
-						);
-					return;
-				}
-				for (const role of ROLES)
-					assert.ok(
-						listing.includes(`• ${role} (package:pi-herdr-roles)`),
-						`missing ${role} with pack provenance in:\n${listing}`,
-					);
-				assert.doesNotMatch(listing, /• poteto \(/);
-				assert.doesNotMatch(listing, /^!/m, "no role diagnostics expected");
-				assert.deepEqual(
-					listed.filter((command) => /^plan(:\d+)?$/.test(command.name)),
-					[{ name: "plan", source: "extension", path: PACK_EXTENSION }],
+	it("lists exactly the six roles and one unsuffixed /plan, with no collisions or retired commands", async () => {
+		const pi = new IsolatedPi({ packages: [PACK_ROOT, hostRoot ?? ""] });
+		try {
+			const listing = await listedRoles(pi);
+			const listed = await commands(pi);
+			assert.deepEqual(
+				roleLines(listing),
+				ROLES.map((role) => `${role} (package:pi-herdr-roles)`),
+				listing,
+			);
+			assert.doesNotMatch(listing, /^!/m, "no role diagnostics expected");
+			assert.deepEqual(
+				listed.filter((command) => /^plan(:\d+)?$/.test(command.name)),
+				[{ name: "plan", source: "extension", path: PACK_EXTENSION }],
+			);
+			assert.deepEqual(
+				listed
+					.filter((command) => command.name === "skill:orchestrate")
+					.map((command) => command.path),
+				[join(PACK_ROOT, "skills", "orchestrate", "SKILL.md")],
+			);
+			const names = listed.map((command) => command.name);
+			assert.equal(new Set(names).size, names.length, "duplicate commands");
+			assert.equal(
+				names.some((name) => /:\d+$/.test(name)),
+				false,
+				"no Pi duplicate-command suffixes",
+			);
+			for (const retired of RETIRED_COMMANDS)
+				assert.equal(
+					names.includes(retired),
+					false,
+					`host still registers retired /${retired}`,
 				);
-				assert.deepEqual(
-					listed
-						.filter((command) => command.name === "skill:orchestrate")
-						.map((command) => command.path),
-					[join(PACK_ROOT, "skills", "orchestrate", "SKILL.md")],
-				);
-				for (const retired of RETIRED_COMMANDS)
-					assert.equal(
-						listed.some((command) => command.name === retired),
-						false,
-						`host still registers retired /${retired}`,
-					);
-			} finally {
-				await pi.close();
-			}
-		},
-	);
+		} finally {
+			await pi.close();
+		}
+	});
 
 	it("delivers /plan as the literal plan-skill wrapper through the pack command", async () => {
+		const pi = new IsolatedPi({ packages: [PACK_ROOT, hostRoot ?? ""] });
+		try {
+			const packPlan = (await commands(pi)).filter(
+				(command) => command.path === PACK_EXTENSION,
+			);
+			assert.deepEqual(
+				packPlan.map((command) => command.name),
+				["plan"],
+			);
+			await assertDeliversPlan(pi, "plan");
+		} finally {
+			await pi.close();
+		}
+	});
+});
+
+// Explicit opt-in only: never inferred from a host's directory layout.
+describe("legacy bundled host characterization", {
+	skip:
+		legacyHostRoot === undefined &&
+		"set PI_HERDR_AGENTS_LEGACY_HOST=<pre-extraction host root> to characterize legacy hosts",
+}, () => {
+	it("host rejects pack roles with its own collision diagnostics", async () => {
+		const pi = new IsolatedPi({ packages: [PACK_ROOT, legacyHostRoot ?? ""] });
+		try {
+			const listing = await listedRoles(pi);
+			for (const role of ROLES)
+				assert.ok(
+					listing.includes(`Role pack cannot replace bundled role "${role}"`),
+					`missing host-owned collision diagnostic for ${role}`,
+				);
+		} finally {
+			await pi.close();
+		}
+	});
+
+	it("with roles.bundled:false, pack roles register and /plan is suffixed", async () => {
 		const pi = new IsolatedPi({
-			packages: [PACK_ROOT, hostRoot ?? ""],
-			// Legacy hosts need their bundled layer disabled before pack roles register.
-			herdrAgentsConfig: legacyHost
-				? JSON.stringify({
-						status: { enabled: true },
-						roles: { bundled: false },
-					})
-				: undefined,
+			packages: [PACK_ROOT, legacyHostRoot ?? ""],
+			herdrAgentsConfig: JSON.stringify({
+				status: { enabled: true },
+				roles: { bundled: false },
+			}),
 		});
 		try {
 			const listing = await listedRoles(pi);
@@ -230,21 +272,12 @@ describe("installed pack with a real pi-herdr-agents host", {
 				(command) => command.path === PACK_EXTENSION,
 			);
 			assert.equal(packPlan.length, 1);
-			if (legacyHost)
-				assert.match(
-					packPlan[0].name,
-					/^plan:\d+$/,
-					"legacy hosts still own a colliding /plan",
-				);
-			else assert.equal(packPlan[0].name, "plan");
-			assert.equal(
-				await deliveredPlanPrompt(pi, packPlan[0].name),
-				formatPlanPrompt(
-					PLAN_SKILL_PATH,
-					readFileSync(PLAN_SKILL_PATH, "utf8"),
-					"build x",
-				),
+			assert.match(
+				packPlan[0].name,
+				/^plan:\d+$/,
+				"legacy hosts still own a colliding /plan",
 			);
+			await assertDeliversPlan(pi, packPlan[0].name);
 		} finally {
 			await pi.close();
 		}
