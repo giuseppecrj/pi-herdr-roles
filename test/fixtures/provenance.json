@@ -1,0 +1,225 @@
+{
+	"sourceRepository": "https://github.com/giuseppecrj/pi-herdr-agents",
+	"sourceCommit": "c2177dff835da44937e614e8a03d0405d442e848",
+	"files": [
+		{
+			"path": "roles/scout.md",
+			"source": "agents/scout.md",
+			"sourceSha256": "32fae3fc849a63f6700656365ba029f1cad61c2f0619cdc1c64ae8655027ea8f",
+			"sha256": "32fae3fc849a63f6700656365ba029f1cad61c2f0619cdc1c64ae8655027ea8f",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "roles/planner.md",
+			"source": "agents/planner.md",
+			"sourceSha256": "d7dfef828a6a606db76c5c56595154572b25deb064fca83578ba7e45390c4719",
+			"sha256": "d7dfef828a6a606db76c5c56595154572b25deb064fca83578ba7e45390c4719",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "roles/worker.md",
+			"source": "agents/worker.md",
+			"sourceSha256": "a281f6d2c34628b3a86794f51e7fb1496696629904c85bc51ac3204ceb3e9c21",
+			"sha256": "a281f6d2c34628b3a86794f51e7fb1496696629904c85bc51ac3204ceb3e9c21",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "roles/reviewer.md",
+			"source": "agents/reviewer.md",
+			"sourceSha256": "ff9a1136e702bf8048e7f0d2428e625a5ff8f99a9589863c1b9b8f2f247b4edc",
+			"sha256": "ff9a1136e702bf8048e7f0d2428e625a5ff8f99a9589863c1b9b8f2f247b4edc",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "roles/adversarial-reviewer.md",
+			"source": "agents/adversarial-reviewer.md",
+			"sourceSha256": "3fd05d243329d4dd507a425d114cf81d444f1124e8e64504bdd39861317b8293",
+			"sha256": "534929806297b9b3d90e931bfcf64e7e9a05ca7b17cc47f64bc9ebe0a2c356ec",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "The bundled `/skill:orchestrate` procedure",
+					"to": "The pi-herdr-roles `/skill:orchestrate` procedure",
+					"reason": "ownership: the host no longer bundles orchestrate"
+				}
+			]
+		},
+		{
+			"path": "roles/visual-tester.md",
+			"source": "agents/visual-tester.md",
+			"sourceSha256": "d2c6d1e083b3ad379fd04242348527cce6e55a787ad5bae67c2e8ecfedab3dd2",
+			"sha256": "08eef85daf8ef707624a64a10cf5c2706c0a494620f8f943023f83528a71eacc",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "Pi Herdr Agents does not ship these.",
+					"to": "Neither pi-herdr-agents nor pi-herdr-roles ships these.",
+					"reason": "ownership: name both packages that do not ship the optional prerequisite"
+				}
+			]
+		},
+		{
+			"path": "skills/plan/SKILL.md",
+			"source": "pi-extension/subagents/plan-skill.md",
+			"sourceSha256": "38f5fddb3193ad523f8795727f71e3fb9e22bb3aaa7143340d84c43cf54926d6",
+			"sha256": "3e43344c787ecbd6a6ce95fa453dd6f85dacdd37f402b53e3712abe27b4b3a68",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "Requires the\n  subagents extension running inside herdr.",
+					"to": "Requires the\n  pi-herdr-agents extension running inside Herdr.",
+					"reason": "ownership: name the host package prerequisite"
+				},
+				{
+					"from": "External facts are not handled by a bundled researcher.",
+					"to": "External facts are not handled by a researcher role in this pack.",
+					"reason": "ownership: the host no longer bundles roles"
+				},
+				{
+					"from": "The extension does not push, create PRs, merge, or remove worktrees automatically. `subagent_resume` does not reattach worktree tracking; continue follow-up in the retained workspace. See `docs/worktree-subagents.md` when this package's guide is available.",
+					"to": "pi-herdr-agents does not push, create PRs, merge, or remove worktrees automatically. `subagent_resume` does not reattach worktree tracking; continue follow-up in the retained workspace. See the worktree guide shipped with the installed pi-herdr-agents package (`docs/worktree-subagents.md` in that package) when it is available.",
+					"reason": "path: the worktree guide remains host-owned and is not shipped in this pack"
+				}
+			]
+		},
+		{
+			"path": "skills/orchestrate/SKILL.md",
+			"source": "skills/orchestrate/SKILL.md",
+			"sourceSha256": "29b81cc60d59e1be5d37332f6e36eda78429355eaa33700fca41d5224290ca5c",
+			"sha256": "29b81cc60d59e1be5d37332f6e36eda78429355eaa33700fca41d5224290ca5c",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "skills/orchestrate/adversarial-review.md",
+			"source": "skills/orchestrate/adversarial-review.md",
+			"sourceSha256": "f8761e4af44f474f927fe318f1f759756697f1e2f64c53bdd45a682246307693",
+			"sha256": "f8761e4af44f474f927fe318f1f759756697f1e2f64c53bdd45a682246307693",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "skills/orchestrate/adversarial-review-example.js",
+			"source": "skills/orchestrate/adversarial-review-example.js",
+			"sourceSha256": "0c71449c7c5f2efe8117bf99a40b6a93d69ac6b948f9b682829227c0d74ed291",
+			"sha256": "0c71449c7c5f2efe8117bf99a40b6a93d69ac6b948f9b682829227c0d74ed291",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/cases.public.json",
+			"source": "test/evals/cases.public.json",
+			"sourceSha256": "a274d6cea1bc2aa6d864c4f17181a8dc9846da9dfe86eb1fe911ef70b48db575",
+			"sha256": "a274d6cea1bc2aa6d864c4f17181a8dc9846da9dfe86eb1fe911ef70b48db575",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/legacy-adversarial-reviewer.md",
+			"source": "test/evals/legacy-adversarial-reviewer.md",
+			"sourceSha256": "1bc77c89c9b2aaf6a1926d7576c40dd31e626db9387195ea50fafa007b9f1593",
+			"sha256": "1bc77c89c9b2aaf6a1926d7576c40dd31e626db9387195ea50fafa007b9f1593",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/oracle.json",
+			"source": "test/evals/oracle.json",
+			"sourceSha256": "958bbc71a37ce4d2c3b03e21b87eb07052b30886b0e7f76240959cfacf19388d",
+			"sha256": "958bbc71a37ce4d2c3b03e21b87eb07052b30886b0e7f76240959cfacf19388d",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/README.md",
+			"source": "test/evals/README.md",
+			"sourceSha256": "6dd03ea522bdfa2415f618d38015df4b567e6b72fc522bc6b9555df0ae37a316",
+			"sha256": "6dd03ea522bdfa2415f618d38015df4b567e6b72fc522bc6b9555df0ae37a316",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/score.mjs",
+			"source": "test/evals/score.mjs",
+			"sourceSha256": "226cbe26d7f110cdab6e324d81bb0ad41563ad29f269714644c2c2f309caabb6",
+			"sha256": "495ec1463e8d25d382551f434ca706ad6b55e4a764160deb6939735a7ce7e680",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "\"../../maestro/core/config/type-guards.ts\"",
+					"to": "\"./type-guards.ts\"",
+					"reason": "no private host imports: vendored type guards"
+				}
+			]
+		},
+		{
+			"path": "test/evals/score.test.mjs",
+			"source": "test/evals/score.test.mjs",
+			"sourceSha256": "d134e63a332124df67b32bdad47ddd50a829161b6169b1e9638417677a501646",
+			"sha256": "d134e63a332124df67b32bdad47ddd50a829161b6169b1e9638417677a501646",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/validate.mjs",
+			"source": "test/evals/validate.mjs",
+			"sourceSha256": "7f17acd9c448d716afdf0c6f7fdf3ca1c7df6510cf17e2b801e2e4de1f5c9b62",
+			"sha256": "5db69ac43d7af931f4437c7e9fad4a7bbdc45b7a034807e427b0909ab25b88d7",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "import {\n\tisPlainObject,\n\tisString,\n} from \"../../maestro/core/config/type-guards.ts\";",
+					"to": "import { isPlainObject, isString } from \"./type-guards.ts\";",
+					"reason": "no private host imports: vendored type guards (Biome-formatted import)"
+				}
+			]
+		},
+		{
+			"path": "test/evals/validate.test.mjs",
+			"source": "test/evals/validate.test.mjs",
+			"sourceSha256": "c52051dcdb9fd3b0728c4c051834a54dd92a585370813c8bdb56f3232fec477c",
+			"sha256": "c52051dcdb9fd3b0728c4c051834a54dd92a585370813c8bdb56f3232fec477c",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "test/evals/type-guards.ts",
+			"source": "maestro/core/config/type-guards.ts",
+			"sourceSha256": "4823462076bfebfa459e924c18c0f23a6e2655a9984802d09ef8a591f441c0a6",
+			"sha256": "4823462076bfebfa459e924c18c0f23a6e2655a9984802d09ef8a591f441c0a6",
+			"status": "unchanged",
+			"replacements": []
+		},
+		{
+			"path": "docs/review-evaluation.md",
+			"source": "docs/review-evaluation.md",
+			"sourceSha256": "012cfb07dd654074050876e789d74b936d694dc95cde892bdcc717177a6f8524",
+			"sha256": "6764049497dddcde978dcb9adcee6a92baf2263d4c7bfcd958044d530f75f50b",
+			"status": "adapted",
+			"replacements": [
+				{
+					"from": "is pinned text copied from `agents/adversarial-reviewer.md` when the corpus was\nadded.",
+					"to": "is pinned text copied from pi-herdr-agents' former `agents/adversarial-reviewer.md`\nwhen the corpus was added.",
+					"reason": "path: source role file now lives in another package"
+				},
+				{
+					"from": "`.npmignore` excludes `test/`, so fixtures do not enter the package preview.\n`docs/review-evaluation.md` is intentional package documentation. If the\n`test/` exclusion changes, add an explicit `test/evals/` exclusion before\npublishing; this deliverable does not change packaging configuration.",
+					"to": "The `package.json` `files` allowlist excludes `test/`, so fixtures do not enter\nthe package preview. `docs/review-evaluation.md` is intentional package\ndocumentation. If the allowlist changes, keep `test/evals/` excluded before\npublishing.",
+					"reason": "packaging: this pack uses a files allowlist"
+				}
+			]
+		},
+		{
+			"path": "LICENSE",
+			"source": "LICENSE",
+			"sourceSha256": "3818f785cb9e8941b27c7f13ebf233022394275b05539660dc6a6ffbd8bb5b4d",
+			"sha256": "3818f785cb9e8941b27c7f13ebf233022394275b05539660dc6a6ffbd8bb5b4d",
+			"status": "unchanged",
+			"replacements": []
+		}
+	]
+}
