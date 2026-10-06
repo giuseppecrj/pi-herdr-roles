@@ -15,6 +15,14 @@
     "name": "Giuseppe Rodriguez",
     "url": "https://github.com/giuseppecrj"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giuseppecrj/pi-herdr-roles.git"
+  },
+  "homepage": "https://github.com/giuseppecrj/pi-herdr-roles#readme",
+  "bugs": {
+    "url": "https://github.com/giuseppecrj/pi-herdr-roles/issues"
+  },
   "type": "module",
   "files": [
     "extensions/",
@@ -25,16 +33,23 @@
     "docs/review-evaluation.md",
     "README.md",
     "LICENSE",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "CHANGELOG.md",
+    "RELEASING.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "changelog": "auto-changelog",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
     "format": "biome format --write extensions test skills/orchestrate/adversarial-review-example.js",
     "format:check": "biome format extensions test skills/orchestrate/adversarial-review-example.js",
     "lint": "oxlint extensions test skills/orchestrate/adversarial-review-example.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --experimental-strip-types --test --test-concurrency=1 test/*.test.ts test/evals/*.test.mjs",
-    "test:evals": "node --experimental-strip-types test/evals/validate.mjs"
+    "test:evals": "node --experimental-strip-types test/evals/validate.mjs",
+    "version": "auto-changelog --package && git add CHANGELOG.md"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
@@ -53,7 +68,13 @@
     "@earendil-works/pi-ai": "1.0.3",
     "@earendil-works/pi-coding-agent": "1.0.3",
     "@types/node": "^22.20.5",
+    "auto-changelog": "^2.6.0",
     "oxlint": "^1.80.0",
     "typescript": "5.9.3"
+  },
+  "auto-changelog": {
+    "commitLimit": false,
+    "template": "keepachangelog",
+    "unreleased": true
   }
 }
