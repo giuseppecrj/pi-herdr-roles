@@ -1,7 +1,6 @@
 {
   "name": "pi-herdr-roles",
-  "version": "0.1.0-experimental.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "Optional general-purpose role pack and planning/review workflows for pi-herdr-agents",
   "keywords": [
     "pi-package",
@@ -52,8 +51,8 @@
     "version": "auto-changelog --package && git add CHANGELOG.md"
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "pi-herdr-agents": "*"
+    "@earendil-works/pi-coding-agent": "^1.0.3",
+    "pi-herdr-agents": ">=3.0.0"
   },
   "pi": {
     "extensions": [

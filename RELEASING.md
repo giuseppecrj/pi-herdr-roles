@@ -4,13 +4,33 @@ GitHub Actions publishes this package when the version in `package.json` changes
 
 The published version must be unique on npm.
 
-## Current state: experimental, not released
+## Current state: 0.1.0, first public release
 
-`pi-herdr-roles` is `0.1.0-experimental.0` with `"private": true`. npm holds only a placeholder prerelease under the `pi-herdr-roles` name; no package content has been published from this repository.
+The `release/0.1.0` commit removes `"private": true` and sets the stable version
+`0.1.0`. When it merges to `main`, the detect step sees the previous
+`0.1.0-experimental.0` private manifest and the current public `0.1.0`, sets
+`release=true`, and the workflow publishes `0.1.0`.
 
-While the package is private or its version is not a strict `major.minor.patch`, the workflow's detect step reports a notice and sets `release=false`. Dependency or metadata changes to `package.json` therefore pass CI without releasing. Once the package is public with a stable version, the host workflow's rules apply: a stable version must increase, an unchanged version does not release, and a decrease fails. The first stable version may keep the core of the previous prerelease (for example `0.1.0-experimental.0` to `0.1.0`), and removing `"private"` at an unchanged stable version releases that version.
+Before this release the package was private with a prerelease version. While a
+package is private or its version is not a strict `major.minor.patch`, the
+workflow's detect step reports a notice and sets `release=false`. Now that the
+package is public with a stable version, the host workflow's rules apply: a
+stable version must increase, an unchanged version does not release, and a
+decrease fails.
 
 Do not design a release that creates a GitHub Release without a successful npm publish for a new version. The workflow publishes first, then tags and creates the GitHub Release.
+
+### Peer dependencies and `.npmrc`
+
+The peers are `"pi-herdr-agents": ">=3.0.0"` and
+`"@earendil-works/pi-coding-agent": "^1.0.3"`. The repository `.npmrc` keeps
+`legacy-peer-deps=true`, so `npm install` and `npm ci` here never auto-install
+peers. Development and CI must not pull npm `pi-herdr-agents` by accident:
+combined-host checks use an explicitly selected checkout through
+`PI_HERDR_AGENTS_HOST`, and the pinned Pi dev dependency supplies the runtime.
+`.npmrc` is not packed, so it does not affect consumers. Pi users still install
+and enable pi-herdr-agents themselves; a peer declaration does not activate an
+extension.
 
 ## Prerequisites
 
@@ -31,21 +51,23 @@ npm pack --dry-run
 
 In GitHub Actions the optional checks controlled by `PI_HERDR_AGENTS_HOST`, `PI_HERDR_AGENTS_LEGACY_HOST` and `PI_HERDR_AGENTS_SOURCE` skip because those variables are unset and no sibling pi-herdr-agents checkout exists. Run them locally before a release (see [Development](README.md#development)).
 
-## First real release
+## First real release (done in 0.1.0)
 
-1. Remove `"private": true` from `package.json`.
-2. Set a stable version (for example `0.1.0`) with `npm version 0.1.0 --no-git-tag-version`, which also regenerates `CHANGELOG.md`.
-3. Replace the temporary `"*"` peer ranges for `pi-herdr-agents` and `@earendil-works/pi-coding-agent` with real ranges covering the published role-free host you tested, and update [compatibility](docs/compatibility.md) with the tested host SHA and version.
-4. Run the role-free host checks against that host:
+These steps were completed on the `release/0.1.0` branch:
+
+1. [x] Removed `"private": true` from `package.json`.
+2. [x] Set the stable version with `npm version 0.1.0 --no-git-tag-version`, which regenerated `CHANGELOG.md` (the `0.1.0` section lists PRs #1 and #2 and their commits; nothing remains under Unreleased).
+3. [x] Replaced the temporary `"*"` peer ranges with `"pi-herdr-agents": ">=3.0.0"` and `"@earendil-works/pi-coding-agent": "^1.0.3"`, and recorded the tested host `7d35371` (3.0.0 line) and Pi `1.0.3` in [compatibility](docs/compatibility.md). The published `pi-herdr-agents@3.0.0` is the compatibility baseline; the host releases before this pack.
+4. [x] Ran the role-free host checks against that host:
 
    ```bash
    PI_HERDR_AGENTS_HOST=/path/to/role-free/pi-herdr-agents npm run check
    ```
 
-5. Run the real-Herdr coverage this package documents: real child launches, child-scope resource visibility and worktree lifecycle are not covered by this repository's tests (see [compatibility](docs/compatibility.md)). They belong to the parent-owned sequential Herdr integration suite. Run it from inside Herdr with this pack installed beside the role-free host, one suite at a time. Do not release from skipped Herdr tests.
-6. Confirm the `npm pack --dry-run` contents (below), then commit and push the release commit as described in [Publish a release](#publish-a-release).
+5. Real-Herdr coverage: real child launches, child-scope resource visibility and worktree lifecycle are not covered by this repository's tests (see [compatibility](docs/compatibility.md)). They belong to the parent-owned sequential Herdr integration suite, run from inside Herdr with this pack installed beside the role-free host, one suite at a time. Do not release from skipped Herdr tests.
+6. [x] Confirmed the `npm pack --dry-run` contents (below). The release commit reaches `main` through a reviewed PR; merging it triggers the workflow.
 
-Confirm the package preview includes `README.md`, `CHANGELOG.md`, `RELEASING.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, `docs/compatibility.md`, `docs/provenance.md`, `docs/review-evaluation.md`, `extensions/index.ts`, exactly the six role files in `roles/` (`scout`, `planner`, `worker`, `reviewer`, `adversarial-reviewer`, `visual-tester`), `skills/plan/SKILL.md`, and `skills/orchestrate/` (`SKILL.md`, `adversarial-review.md`, `adversarial-review-example.js`). Confirm it contains no non-role Markdown under `roles/`, no `poteto` resources, no tests, evals or fixtures, and no `.github/`, plans, sessions, evidence, `.pi/` or local configuration.
+For every release, confirm the package preview includes `package.json`, `README.md`, `CHANGELOG.md`, `RELEASING.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`, `docs/compatibility.md`, `docs/provenance.md`, `docs/review-evaluation.md`, `extensions/index.ts`, exactly the six role files in `roles/` (`scout`, `planner`, `worker`, `reviewer`, `adversarial-reviewer`, `visual-tester`), `skills/plan/SKILL.md`, and `skills/orchestrate/` (`SKILL.md`, `adversarial-review.md`, `adversarial-review-example.js`): 20 files. Confirm it contains no non-role Markdown under `roles/`, no `poteto` resources, no tests, evals or fixtures, and no `.github/`, plans, sessions, evidence, `.pi/`, `.npmrc` or local configuration.
 
 ## npm authentication
 
@@ -104,7 +126,7 @@ pi install npm:pi-herdr-roles
 
 ### The workflow ran but did not release
 
-Check the detect job's notice. A private package or a prerelease version is intentionally not released.
+Check the detect job's notice. A private package, a prerelease version or an unchanged stable version is intentionally not released.
 
 ### Tag points to another commit
 

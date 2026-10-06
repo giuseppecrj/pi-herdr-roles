@@ -1,29 +1,35 @@
 # Compatibility
 
-Status: private Wave 1 candidate. Nothing here is a published compatibility
-promise.
+Status: pi-herdr-roles `0.1.0`, the first public release.
 
-## Intended host
+## Host baseline
 
-The only intended host is the **role-free pi-herdr-agents candidate** produced
-by the Wave 1 host extraction: a host that bundles no roles, no `/plan` command
-and no top-level `orchestrate` skill. Its exact candidate SHA is recorded by the
-parent integration owner when the combined revision vector is tested. Run the
-combined checks against it with:
+The compatibility baseline is the published **pi-herdr-agents `3.0.0`**, the
+first role-free host release: it bundles no roles, no `/plan` command and no
+top-level `orchestrate` skill. The package declares
+`"pi-herdr-agents": ">=3.0.0"`; the temporary `"*"` peer ranges used during
+the private Wave 1 experiments are gone.
+
+| Component | Tested revision |
+| --- | --- |
+| pi-herdr-agents | `7d35371` (main at the 3.0.0 line, before its version commit) |
+| Pi SDK and CLI | `1.0.3` |
+
+Host versions after 3.0.0 are allowed by the range but were not tested for this
+release. Run the combined checks against a host checkout with:
 
 ```bash
-PI_HERDR_AGENTS_HOST=/path/to/candidate/pi-herdr-agents npm test
+PI_HERDR_AGENTS_HOST=/path/to/pi-herdr-agents npm test
 ```
 
-The `peerDependencies` range `"pi-herdr-agents": "*"` is temporary scaffolding
-for local experiments. A publication-compatible minimum must name a released
-role-free host and is a later release gate. npm `pi-herdr-agents@2.0.5` predates
-Maestro, still bundles these roles and is **not** a supported host.
+npm `pi-herdr-agents@2.0.5` and earlier predate the extraction, still bundle
+these roles and are **not** supported hosts.
 
 ## Pi runtime
 
 Developed and tested against Pi `1.0.3` (`@earendil-works/pi-coding-agent`
-`1.0.3` dev dependency and CLI). Other Pi versions are untested.
+`1.0.3` dev dependency and CLI). The peer range is `^1.0.3`; other Pi versions
+are untested.
 
 ## Role-pack protocol
 
