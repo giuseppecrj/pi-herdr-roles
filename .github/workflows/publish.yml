@@ -72,7 +72,7 @@ jobs:
               # the same core version.
               if ! version_order="$(node --input-type=module -e '
                 const parse = (value, allowPrerelease) => {
-                  const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[0-9A-Za-z.-]+)?$/.exec(value);
+                  const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?$/.exec(value);
                   if (!match || (match[4] && !allowPrerelease)) process.exit(1);
                   return { core: match.slice(1, 4).map(BigInt), prerelease: Boolean(match[4]) };
                 };

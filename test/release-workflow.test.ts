@@ -424,6 +424,32 @@ test("experimental private or prerelease packages are not released", async () =>
 		belowPrerelease.error,
 		"stable below previous prerelease must fail",
 	);
+
+	// Previous prerelease identifiers must be valid SemVer: no empty identifiers
+	// and no numeric identifiers with leading zeroes.
+	for (const previousVersion of [
+		"0.1.0-..",
+		"0.1.0-01",
+		"0.1.0-rc.01",
+		"0.1.0-",
+	]) {
+		const malformed = runDetect(detect, {
+			eventName: "push",
+			previousVersion,
+			currentVersion: "0.1.0",
+		});
+		assert.ok(
+			malformed.error,
+			`malformed previous prerelease ${previousVersion} must fail`,
+		);
+	}
+	const validPrerelease = runDetect(detect, {
+		eventName: "push",
+		previousVersion: "0.1.0-rc.1",
+		currentVersion: "0.1.0",
+	});
+	assert.equal(validPrerelease.error, undefined);
+	assert.equal(validPrerelease.outputs.release, "true");
 });
 
 test("npm registry responses are structured and fail closed", async () => {
