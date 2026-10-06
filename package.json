@@ -1,0 +1,59 @@
+{
+  "name": "pi-herdr-roles",
+  "version": "0.1.0-experimental.0",
+  "private": true,
+  "description": "Optional general-purpose role pack and planning/review workflows for pi-herdr-agents",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "herdr",
+    "subagents",
+    "roles"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Giuseppe Rodriguez",
+    "url": "https://github.com/giuseppecrj"
+  },
+  "type": "module",
+  "files": [
+    "extensions/",
+    "roles/",
+    "skills/",
+    "docs/compatibility.md",
+    "docs/provenance.md",
+    "docs/review-evaluation.md",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "format": "biome format --write extensions test skills/orchestrate/adversarial-review-example.js",
+    "format:check": "biome format extensions test skills/orchestrate/adversarial-review-example.js",
+    "lint": "oxlint extensions test skills/orchestrate/adversarial-review-example.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --experimental-strip-types --test --test-concurrency=1 test/*.test.ts test/evals/*.test.mjs",
+    "test:evals": "node --experimental-strip-types test/evals/validate.mjs"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "pi-herdr-agents": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/index.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.11",
+    "@earendil-works/pi-ai": "1.0.3",
+    "@earendil-works/pi-coding-agent": "1.0.3",
+    "@types/node": "^22.20.5",
+    "oxlint": "^1.80.0",
+    "typescript": "5.9.3"
+  }
+}
