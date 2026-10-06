@@ -1,8 +1,8 @@
 # pi-herdr-roles
 
-> **Experimental, private, unpublished.** This package is a local Wave 1
-> candidate. npm holds only a placeholder under its name; it has no release and
-> does not claim compatibility with any published pi-herdr-agents version.
+> **Version 0.1.0.** Requires pi-herdr-agents `>=3.0.0`, the first published
+> role-free host, installed and enabled through Pi separately. See
+> [compatibility](docs/compatibility.md) for the tested revisions.
 
 An optional Pi role pack for [pi-herdr-agents](https://github.com/giuseppecrj/pi-herdr-agents).
 It supplies six general-purpose subagent roles plus the `/plan` and
@@ -31,15 +31,16 @@ on pi-herdr-pstack.
 
 pi-herdr-agents is the execution host. It is declared as a peer dependency, but
 **a peer declaration does not activate an extension**: install and enable both
-packages through Pi. This package is not yet published (`npm:pi-herdr-roles`
-is only a placeholder), so install it from the GitHub repository or a local
-path, for example in an isolated agent directory:
+packages through Pi. After the 0.1.0 release lands on npm, install the host
+first and then this pack:
 
 ```bash
-export PI_CODING_AGENT_DIR=/tmp/pi-roles-experiment/agent
-pi install /path/to/candidate/pi-herdr-agents
-pi install git:github.com/giuseppecrj/pi-herdr-roles   # or /path/to/pi-herdr-roles
+pi install npm:pi-herdr-agents   # >=3.0.0
+pi install npm:pi-herdr-roles
 ```
+
+Until then, install from the GitHub repository or a local path instead (for
+example `pi install git:github.com/giuseppecrj/pi-herdr-roles`).
 
 Do not install this beside a pi-herdr-agents version that still bundles these
 roles or its own `/plan` and `orchestrate`; see
@@ -112,9 +113,8 @@ The review evaluation corpus moved with the workflow; see
 
 ## Release
 
-The package is private and has never been released. A GitHub Actions workflow
-publishes to npm with trusted publishing once the package is made public with a
-stable version; until then it reports a notice and releases nothing. See
+0.1.0 is the first public release. A GitHub Actions workflow publishes each
+stable version bump on `main` to npm with trusted publishing. See
 [RELEASING.md](RELEASING.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Provenance and license

@@ -41,7 +41,7 @@ const provenance = JSON.parse(
 const manifest = JSON.parse(read("package.json")) as {
 	name: string;
 	version: string;
-	private: boolean;
+	private?: boolean;
 	license: string;
 	keywords: string[];
 	scripts: Record<string, string>;
@@ -529,15 +529,15 @@ describe("workflow dependency closure", () => {
 });
 
 describe("package manifest", () => {
-	it("is a private experimental Pi package with host peers", () => {
+	it("is a public released Pi package with host peers", () => {
 		assert.equal(manifest.name, "pi-herdr-roles");
-		assert.equal(manifest.private, true);
-		assert.match(manifest.version, /^0\.\d+\.\d+-experimental\.\d+$/);
+		assert.equal(manifest.private, undefined);
+		assert.equal(manifest.version, "0.1.0");
 		assert.equal(manifest.license, "MIT");
 		assert.ok(manifest.keywords.includes("pi-package"));
 		assert.deepEqual(manifest.peerDependencies, {
-			"@earendil-works/pi-coding-agent": "*",
-			"pi-herdr-agents": "*",
+			"@earendil-works/pi-coding-agent": "^1.0.3",
+			"pi-herdr-agents": ">=3.0.0",
 		});
 		assert.equal(manifest.dependencies, undefined);
 		assert.deepEqual(manifest.pi, {
@@ -570,6 +570,8 @@ describe("package manifest", () => {
 		for (const path of [
 			"package.json",
 			"README.md",
+			"CHANGELOG.md",
+			"RELEASING.md",
 			"LICENSE",
 			"THIRD_PARTY_NOTICES.md",
 			"extensions/index.ts",
